@@ -1,0 +1,22 @@
+{
+    "maxlen" : 100,
+    "maxwords" : 10000,
+    "dictionary" : "dictionary_ML.json",
+    "model" : "model_ML.h5",
+    "model_weights" : "model_ML.h5",
+    "target_name_dict" : { "stat.AP" : 0,
+                        "stat.CO" : 1,
+                        "stat.ME" : 2,
+                        "stat.ML" : 3,
+                        "stat.OT" : 4
+                    },
+    "target_fullname_dict" : {
+        "AP: Statistics Applications" : 0,
+        "CO: Statistics Computation" : 1,
+        "ME: Statistics Methodology" : 2,
+        "ML: Statistics Machine Learning " : 3,
+        "OT: Other Statistics" : 4
+    },
+    "s3_bucket_name" : "ml-bucket-1"
+}
+
