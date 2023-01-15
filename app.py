@@ -8,12 +8,7 @@ import os
 import pickle
 import numpy as np
 
-import tensorflow as tf
-
-from tensorflow.keras.preprocessing.sequence import pad_sequences
-from tensorflow.keras.models import model_from_json, model_from_config, load_model
-from tensorflow.keras.preprocessing.text import Tokenizer
-from tensorflow.keras.preprocessing import text
+import sklearn
 
 from sklearn.linear_model import SGDClassifier
 from sklearn.metrics import classification_report
@@ -41,7 +36,7 @@ def main():
    boto3.Session().resource('s3').Bucket('serverless-ml-1').download_file('finalized_model.sav', '/tmp/finalized_model.sav')
    
    with open('/tmp/finalized_vectorizer.sav', 'rb') as handle:
-       tokenizer = pickle.load(handle)
+       vectorizer = pickle.load(handle)
 
    with open('/tmp/finalized_model.sav', 'rb') as handle:
        model = pickle.load(handle)
@@ -53,7 +48,7 @@ def main():
       'title' : 'Web App for classifying abstracts on statistics',
       'time': timeString,
       'cpucount' : cpuCount,
-      'tfversion' : tf.__version__
+      'skversion' : sklearn.__version__
       }
       
    logging.warning('request.method is %s', request.method)
@@ -71,7 +66,7 @@ def main():
       logging.warning('seq_1 is %s', seq_1)
       logging.warning('text length is %s', len(request.form['myTextArea']))
            
-      prob = model.predict_proba(vectorizer.transform(seq_1))
+      prob = model.predict_proba(vectorizer.transform([seq_1]))
       #prob /= prob.sum()
       prob = prob.sum(axis=0)
       logging.warning('prob is %s', prob)
