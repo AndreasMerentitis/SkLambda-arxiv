@@ -15,6 +15,7 @@ from sklearn.metrics import precision_recall_curve
 from sklearn.metrics import roc_curve
 from sklearn.metrics import PrecisionRecallDisplay
 from sklearn.metrics import RocCurveDisplay
+from sklearn.metrics import confusion_matrix
 import matplotlib.pyplot as plt 
 
 import pdb
@@ -192,12 +193,14 @@ for text in texts:
     prob, label2target = predict_text([text])
     prob = prob.sum(axis=0) 
 
-    if max(prob) >= 0.2 and len(text[0]) > 40:
+    if max(prob) >= 0.5 and len(text) > 40:
          category_label = 1
-         category_labels.append(max(prob))
+         category_labels.append(category_label)
+         #category_labels.append(max(prob))
     else:
          category_label = 0
-         category_labels.append(max(prob))
+         category_labels.append(category_label)
+         #category_labels.append(max(prob))
 
 
 y_predict = np.asarray(category_labels)
@@ -212,5 +215,8 @@ plt.show()
 roc_display = RocCurveDisplay(fpr=fpr, tpr=tpr).plot()
 plt.show()
 
+print (confusion_matrix(y_true.values, y_predict))
+
+print (np.mean(y_predict == y_true.values))
 
 

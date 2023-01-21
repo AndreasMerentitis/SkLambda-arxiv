@@ -7,6 +7,9 @@ import pickle
 from sklearn.linear_model import LogisticRegression
 from sklearn.linear_model import RidgeClassifier
 from sklearn.linear_model import SGDClassifier
+from sklearn.multiclass import OneVsRestClassifier
+from sklearn.svm import SVC
+
 from sklearn.metrics import classification_report
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_extraction.text import CountVectorizer
@@ -16,6 +19,7 @@ from sklearn.metrics import precision_recall_curve
 from sklearn.metrics import roc_curve
 from sklearn.metrics import PrecisionRecallDisplay
 from sklearn.metrics import RocCurveDisplay
+from sklearn.metrics import confusion_matrix
 import matplotlib.pyplot as plt 
 
 import pdb
@@ -49,7 +53,9 @@ def get_abstracts(files):
 
 def define_model(abstracts_selected, labels_selected):
 
-    vectorizer = CountVectorizer()
+    #vectorizer = CountVectorizer(max_features=10000)
+    vectorizer = TfidfVectorizer(max_features=15000)
+    
     sk_sequences = vectorizer.fit_transform(abstracts_selected)
 
     np.random.seed(1234)
@@ -68,8 +74,11 @@ def define_model(abstracts_selected, labels_selected):
     test_seq_sk = sk_sequences[split_2:, :]
 
     #%%
-    vocab_size = 10000
-    model = SGDClassifier(loss='log', penalty='l2', alpha=1e-3, random_state=42, max_iter=10, tol=None)
+    #model = SGDClassifier(loss='log', penalty='l2', alpha=1e-3, random_state=42, max_iter=20, tol=None)
+    #model = SGDClassifier(loss='hinge', penalty='l2', alpha=1e-3, random_state=42, max_iter=20, tol=0.001)
+    #model = OneVsRestClassifier(RidgeClassifier())
+    model = OneVsRestClassifier(SGDClassifier(loss='log', max_iter=200))
+
 
     return model, train_labels, dev_labels, test_labels, train_seq_sk, dev_seq_sk, test_seq_sk, vectorizer
 
@@ -111,8 +120,15 @@ y_test_num = np.asarray([target_name_dict[x] for x in test_labels.tolist()])
 model.fit(train_seq, y_train_num)
 pred = model.predict(test_seq)
 
+print (np.unique(y_train_num, return_counts=True))
+print (np.unique(pred, return_counts=True))
+
 ev = np.mean(pred == y_test_num)
 print(ev)
+
+pdb.set_trace()
+
+
 
 df = pd.read_csv('texts.csv')  
 
@@ -144,12 +160,14 @@ for text in texts:
     
     prob = prob.sum(axis=0) 
 
-    if max(prob) >= 0.2 and len(text[0]) > 40:
+    if max(prob) >= 0.4 and len(text) > 40:
          category_label = 1
-         category_labels.append(max(prob))
+         category_labels.append(category_label)
+         #category_labels.append(max(prob))
     else:
          category_label = 0
-         category_labels.append(max(prob))
+         category_labels.append(category_label)
+         #category_labels.append(max(prob))
 
 y_predict = np.asarray(category_labels)
 precision, recall, thresholds_prr = precision_recall_curve(y_true, y_predict)
@@ -162,6 +180,11 @@ plt.show()
 
 roc_display = RocCurveDisplay(fpr=fpr, tpr=tpr).plot()
 plt.show()
+
+print (confusion_matrix(y_true.values, y_predict))
+
+print (np.mean(y_predict == y_true.values))
+
 
 
 
