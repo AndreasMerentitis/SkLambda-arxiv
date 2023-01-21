@@ -68,6 +68,7 @@ def main():
            
       prob = model.predict_proba(vectorizer.transform([seq_1]))
       #prob /= prob.sum()
+      logging.warning('prob0 is %s', prob)
       prob = prob.sum(axis=0)
       logging.warning('prob is %s', prob)
       ii = np.argmax(prob)
