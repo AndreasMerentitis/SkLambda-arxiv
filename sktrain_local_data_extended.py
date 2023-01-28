@@ -115,15 +115,19 @@ labels_selected_num = labels_selected_num + 1
 
 df = pd.read_csv('texts.csv')  
 
-texts = df.texts
-y_true = df.labels
+# oversample the dataframe to get more negative samples that are not arxiv ML paper of any type
+df_extended = df.sample(n=3000, replace='True')
+
+texts = df_extended.texts
+y_true = df_extended.labels
 
 abstracts_selected_extended = np.concatenate((abstracts_selected, np.asarray(texts)), axis=0)
 labels_selected_extended = np.concatenate((labels_selected_num, np.asarray(y_true)), axis=0)
 
+# split the training/testing data and return the model template 
 model, train_labels, dev_labels, test_labels, train_seq, dev_seq, test_seq, vectorizer = define_model(abstracts_selected_extended, labels_selected_extended)
 
-#pdb.set_trace()
+print (pd.value_counts(labels_selected_extended))
 
 model.fit(train_seq, train_labels)
 pred = model.predict(test_seq)
@@ -134,8 +138,10 @@ print (np.unique(pred, return_counts=True))
 ev = np.mean(pred == test_labels)
 print(ev)
 
+#pdb.set_trace()
+
 ## Predict for one example to show that the flow works with the model in memory 
-model.predict(vectorizer.transform([texts[0]]))
+model.predict(vectorizer.transform([np.asarray(texts)[0]]))
 
 #%%
 
@@ -153,6 +159,7 @@ print("Saved model to disk")
 loaded_model = pickle.load(open(filename_model, 'rb'))
 
 category_labels = []
+category_proba = []
 for text in texts:
     label2target = loaded_model.predict(vectorizer.transform([text]))
     prob = loaded_model.predict_proba(vectorizer.transform([text]))
@@ -162,11 +169,11 @@ for text in texts:
     if max(prob) >= 0.4 and len(text) > 40:
          category_label = 1
          category_labels.append(category_label)
-         #category_labels.append(max(prob))
+         category_proba.append(max(prob))
     else:
          category_label = 0
          category_labels.append(category_label)
-         #category_labels.append(max(prob))
+         category_proba.append(max(prob))
 
 y_predict = np.asarray(category_labels)
 precision, recall, thresholds_prr = precision_recall_curve(y_true, y_predict)
