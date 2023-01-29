@@ -1,4 +1,4 @@
-# Serverless Machine Learning inference on AWS Lambda with TensorFlow / keras and flask front end
+# Serverless Machine Learning inference on AWS Lambda with Scickit-Learn and flask front end
 
 This project classifies a given abstract in different subfields of Machine Learning (using labels from arxiv). 
 Under the hood there is a Scikit-Learn NLP classification model deployed to AWS Lambda using the Serverless framework.

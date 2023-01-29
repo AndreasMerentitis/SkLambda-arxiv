@@ -73,7 +73,7 @@ def main():
       logging.warning('prob is %s', prob)
       ii = np.argmax(prob)
       logging.warning('ii is %s', ii)
-      if max(prob) >= 0.4 and len(request.form['myTextArea']) > 40:
+      if max(prob) >= 0.35 and len(request.form['myTextArea']) > 40:
          final_label = label2target[ii]
       else: 
          final_label = 'not a stats abstract'
