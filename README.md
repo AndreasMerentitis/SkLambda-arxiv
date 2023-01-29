@@ -7,10 +7,8 @@ The abstract is submited unsing a web form that is powered by flask and wsgi.
 by: Andreas Merentitis
 
 ![relative path 6](/deploy.png?raw=true "deploy.png")
+![relative path 1](/infer.png?raw=true "infer.png")
 
-<p align="center">
-  ![relative path 1](/infer.png?raw=true "infer.png")
-</p>
 
 ### Prerequisites
 
