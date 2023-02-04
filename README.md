@@ -12,7 +12,7 @@ by: Andreas Merentitis
 
 ### Prerequisites
 
-The project requires a pre-trained keras model on a certain subset of arxiv. 
+The project requires a pre-trained Scikit model on a certain subset of arxiv. 
 For downloading the required data please check the repository arxiv_collector
 or use the scripts provided in the data folder. For example from the root 
 directory:
