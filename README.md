@@ -15,7 +15,7 @@ by: Andreas Merentitis
 The project requires a pre-trained Scikit model on a certain subset of arxiv. 
 For downloading the required data please check the repository arxiv_collector
 or use the scripts provided in the data folder. For example from the root 
-directory:
+directory you can run:
 
 ```
 python data/collect.py -c stat 2015ml.h5 -start 2015-01-01 -end 2015-12-31
